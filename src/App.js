@@ -2,6 +2,7 @@ import './App.css';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import nationalParks from './national-parks.json';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -10,15 +11,19 @@ L.Icon.Default.mergeOptions({
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 })
-const magicKingdomLatLng = [28.3852, -81.5639];
 
 function MagicKingdom() {
   const map = useMap();
-  setTimeout(() => {
-    map.flyTo(magicKingdomLatLng, 14, {
-      duration: 3
-    })
-  }, 1000);  
+  const parksGeoJSON = new L.GeoJSON(nationalParks, {
+    onEachFeature: (feature = {}, layer) => {
+      const { properties = {} } = feature;
+      const { Name } = properties;
+      if (!Name) return;
+      layer.bindPopup(`<p>${Name}</p>`)
+    }
+  });
+  parksGeoJSON.addTo(map);
+  console.log(parksGeoJSON)  
 }
 
 function App() {
