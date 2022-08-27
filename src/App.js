@@ -2,6 +2,8 @@ import './App.css';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { geosearch } from 'esri-leaflet-geocoder';
+import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css'
 import nationalParks from './national-parks.json';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,7 +14,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 })
 
-function MagicKingdom() {
+function NationalParks() {
   const map = useMap();
   const parksGeoJSON = new L.GeoJSON(nationalParks, {
     onEachFeature: (feature = {}, layer) => {
@@ -23,7 +25,10 @@ function MagicKingdom() {
     }
   });
   parksGeoJSON.addTo(map);
-  console.log(parksGeoJSON)  
+
+  const control = geosearch();
+  control.addTo(map);
+  //console.log(parksGeoJSON)  
 }
 
 function App() {
@@ -36,7 +41,7 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />     
-        <MagicKingdom />   
+        <NationalParks />   
         <Marker position={location}>
           <Popup>
             This is a popup example.
